@@ -163,6 +163,24 @@ class Subscription extends \Sabre\CalDAV\Subscriptions\Subscription implements I
     }
 
     /**
+     * Returns the owner of the source calendar.
+     *
+     * For subscriptions, this returns the owner of the source calendar (not the subscriber).
+     * This is important for permission checks like hiding private events.
+     *
+     * @return string|null The principal URI of the source calendar owner
+     */
+    function getOwner() {
+        $sourceCalendarInfo = $this->getSourceCalendarInfo();
+        if ($sourceCalendarInfo && isset($sourceCalendarInfo['principaluri'])) {
+            return $sourceCalendarInfo['principaluri'];
+        }
+
+        // Fallback to parent implementation
+        return parent::getOwner();
+    }
+
+    /**
      * Checks if the subscription allows write access.
      *
      * Write access is determined by checking if the source calendar grants
